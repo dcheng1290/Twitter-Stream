@@ -5,6 +5,8 @@ const middleware = require('./middleware');
 const routes = require('./routes');
 const db = require('../db');
 const Twitter = require('./twitter');
+const Twit = require ('twit');
+const twitting = Twitter;
 
 
 const PORT = process.env.port || 3000;
@@ -32,7 +34,18 @@ app.use(express.static(path.join(__dirname + '/../public/dist')));
 
 // Create Server and Socket.io Instance
 const server = app.listen(PORT);
-console.log(`Listening on port ${PORT}`)
+console.log(`Listening on port ${PORT}`);
+
+// Twitter.Twitter.post('status/update', { status: 'Test' }, function (error, params, response) {
+//   if (error) throw error;
+//   console.log(params);
+//   console.log(response);
+// });
+
+Twitter.Twitter.get('search/tweets', { q: 'banana since:2018-04-11', count: 100 }, function (err, data, response) {
+  console.log('working');
+});
+
 
 // Creating socket connection with client and add all socket events/listeners here
 const io = require('socket.io').listen(server);

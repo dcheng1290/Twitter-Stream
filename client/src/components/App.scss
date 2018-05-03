@@ -1,5 +1,14 @@
-.container{
-   h1{
-      font-size: 50px;
-   }
+.app {
+  text-align: center;
+    height: 100px;
+  padding: 20px;
+  color: white;
 }
+
+.header {
+  background-color: lighten(#222, 10%);
+  height: 300px;
+  padding: 20px;
+  color: white;
+}
+
