@@ -7,6 +7,7 @@ const db = require('../db');
 const Twitter = require('./twitter');
 const Twit = require ('twit');
 const twitting = Twitter;
+const Sentiment = require('./sentiment.js');
 
 
 const PORT = process.env.port || 3000;
@@ -32,20 +33,13 @@ app.use(express.static(path.join(__dirname + '/../public/dist')));
 // app.use('/api', routes.api);
 // app.use('/api/profiles', routes.profiles);
 
-// Create Server and Socket.io Instance
+
 const server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
 
-// Twitter.Twitter.post('status/update', { status: 'Test' }, function (error, params, response) {
-//   if (error) throw error;
-//   console.log(params);
-//   console.log(response);
-// });
-
-Twitter.Twitter.get('search/tweets', { q: 'banana since:2018-04-11', count: 100 }, function (err, data, response) {
+Twitter.Twitter.get('search/tweets', { q: 'banana since: 2017-04-11', count: 100 }, function (err, data, response) {
   console.log('working');
 });
-
 
 // Creating socket connection with client and add all socket events/listeners here
 const io = require('socket.io').listen(server);
@@ -57,19 +51,19 @@ io.sockets.on('connection', function(socket) {
   socket.on('chat message', function (msg) {
     console.log('message: ' + msg);
     
-    // Streaming endpoint 
+
     streamTwitter = Twitter.stream('statuses/filter');
 
-    // Turns on the stream
+    // Turns on the stream on 'tweet'
     streamTwitter.on('tweet', function (tweet) {
-      console.log(tweet);
+      console.log('hello tweet');
       
       // produce a message/event to socket/client
-      socket.emit('', 'an event');
+      socket.emit('sendMessage', {tweet: sentiment.getTweets(tweet, socket)});
     });
 
     socket.once('disconnect', function () {
-
+      
       // disconnect socket and twitter stream
       socket.disconnect();
       streamTwitter.stop();
