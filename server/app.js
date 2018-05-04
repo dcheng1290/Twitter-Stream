@@ -5,8 +5,7 @@ const middleware = require('./middleware');
 const routes = require('./routes');
 const db = require('../db');
 const Twitter = require('./twitter');
-const Twit = require ('twit');
-const twitting = Twitter;
+const streamTwitter = Twitter;
 const Sentiment = require('./sentiment.js');
 
 
@@ -37,34 +36,36 @@ app.use(express.static(path.join(__dirname + '/../public/dist')));
 const server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
 
-Twitter.Twitter.get('search/tweets', { q: 'banana since: 2017-04-11', count: 100 }, function (err, data, response) {
-  console.log('working');
-});
+// Twitter.get('search/tweets', { q: 'banana since:2011-07-11', count: 100 }, function (err, data, response) {
+//   console.log('getting data')
+// })
+
 
 // Creating socket connection with client and add all socket events/listeners here
 const io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
   console.log('A client is connected');
 
-  let streamTwitter;
+  var streamTwitter;
 
-  socket.on('chat message', function (msg) {
-    console.log('message: ' + msg);
+  // keyword provided from SearchForm.jsx on 'search'
+  socket.on('search', function (msg) {
+    console.log('message: ' + msg.keyword);
     
 
-    streamTwitter = Twitter.stream('statuses/filter');
+    streamTwitter = Twitter.stream('statuses/filter', {track: 'kobe bryant'});
 
-    // Turns on the stream on 'tweet'
+    // Turns on the stream on 'tweet' and includes the entire tweet information
     streamTwitter.on('tweet', function (tweet) {
-      console.log('hello tweet');
+      console.log(tweet);
       
-      // produce a message/event to socket/client
-      socket.emit('sendMessage', {tweet: sentiment.getTweets(tweet, socket)});
+      // As the message comes in, get sentiment data and send back to client
+      socket.emit('sendMessage', 'kobe bryant');
     });
 
     socket.once('disconnect', function () {
       
-      // disconnect socket and twitter stream
+
       socket.disconnect();
       streamTwitter.stop();
 

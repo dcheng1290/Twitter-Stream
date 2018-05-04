@@ -25,6 +25,7 @@
     "express-session": "^1.15.1",
     "grunt-cli": "^1.2.0",
     "grunt-pg": "https://github.com/watsoncj/grunt-pg.git",
+    "immutability-helper": "^2.7.0",
     "knex": "^0.14.6",
     "knex-migrate": "^1.5.5",
     "morgan": "^1.8.1",
@@ -42,6 +43,7 @@
     "sass-loader": "^7.0.1",
     "sentiment": "^5.0.0",
     "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0",
     "twit": "^2.2.9"
   },
   "devDependencies": {
