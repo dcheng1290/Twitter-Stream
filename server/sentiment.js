@@ -1,5 +1,3 @@
-import { Z_FILTERED } from 'zlib';
-
 const Sentiment = require('sentiment');
 const sentiment = new Sentiment;
 
@@ -16,7 +14,6 @@ sentiment.getTweets = (tweet, socket) => {
     sentimentText = 'Neutral';
   }
   return sentiment.storeTweets(tweet, sentimentText, socket);
-  console.log('sentiment data ' + sentimentText);
 };
 
 sentiment.storeTweets = (tweet, sentimentText, socket) => {
@@ -25,10 +22,15 @@ sentiment.storeTweets = (tweet, sentimentText, socket) => {
     tweet_id: tweet.id_str,
     text: tweet.text,
     user: {
-      username: tweet.user.name,
+      name: tweet.user.name,
+      username: tweet.user.screen_name,
+      location: tweet.user.location,
+      timezone: tweet.user.time_zone,
+      created_at: tweet.user.created_at,
       profile_image_url: tweet.user.profile_image_url,
     },
   };
+  return tweetInfo;
 };
 
 
