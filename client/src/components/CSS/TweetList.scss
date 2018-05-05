@@ -6,3 +6,19 @@
   color: black
 }
 
+h5{
+  color: blue;
+  font-size: 70px;
+  text-align: center;
+}
+
+body {
+  background-image: url('http://akveo.com/blur-admin/assets/img/blur-bg-blurred.jpg');
+  height: cover;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

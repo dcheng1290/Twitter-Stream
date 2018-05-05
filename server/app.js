@@ -9,13 +9,14 @@ const streamTwitter = Twitter;
 const Sentiment = require('./sentiment.js');
 
 
+
 const PORT = process.env.port || 3000;
 
 const app = express();
-app.use(middleware.morgan('dev'));
-app.use(middleware.cookieParser());
-app.use(middleware.bodyParser.urlencoded({extended: false}));
-app.use(middleware.bodyParser.json());
+// app.use(middleware.morgan('dev'));
+// app.use(middleware.cookieParser());
+// app.use(middleware.bodyParser.urlencoded({extended: false}));
+// app.use(middleware.bodyParser.json());
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'ejs');
 
@@ -52,15 +53,15 @@ io.sockets.on('connection', function(socket) {
   socket.on('search', function (msg) {
     console.log('message: ' + msg.keyword);
     
-
-    streamTwitter = Twitter.stream('statuses/filter', {track: 'kobe bryant'});
+    // track: searches based on the keyword 
+    streamTwitter = Twitter.stream('statuses/filter', {track: msg.keyword});
 
     // Turns on the stream on 'tweet' and includes the entire tweet information
     streamTwitter.on('tweet', function (tweet) {
-      console.log(tweet);
+      console.log(tweet.text);
       
       // As the message comes in, get sentiment data and send back to client
-      socket.emit('sendMessage', 'kobe bryant');
+      socket.emit('sendMessage', {tweet: Sentiment.getTweets(tweet)});
     });
 
     socket.once('disconnect', function () {

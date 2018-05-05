@@ -1,13 +1,20 @@
 import React from 'react';
 import styles from './CSS/TweetList.scss';
+import Tweets from './Tweets.jsx';
 
-const TweetList = (props) => {
-  return (
-    <div className={styles.row}>
-      {/* {props.tweets.map((tweet, i) => <Tweets/>)} */}
-      <h1>Tweets Stream Component View</h1>
-    </div>
-  );
-};
+class TweetList extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+    
+  render() {  
+    return (
+      <div>
+        <h5>The working twitter stream</h5>
+        {this.props.tweets.map((mappedTweet, index) => <Tweets tweet={mappedTweet} key={index} />)}
+      </div>
+    );
+  }
+}
 
 export default TweetList;

@@ -1,9 +1,11 @@
 import React from 'react';
+import update from 'immutability-helper';
 import io from 'socket.io-client';
 import styles from './CSS/App.scss';
 import SearchForm from './SearchForm.jsx';
 import TweetList from './TweetList.jsx';
-import Test from './Test.jsx';
+import Test from './Test.jsx';  
+import Tweets from './Tweets.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,7 +16,6 @@ class App extends React.Component {
       searchStatus: false,
     };
     this.emit = this.emit.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
     this.getTweet = this.getTweet.bind(this);
@@ -27,11 +28,11 @@ class App extends React.Component {
   
   disconnect() {
     this.setState({ status: 'disconnected' });
-    console.log('Disconnected from socket: ' + this.socket.id);
+    console.log('Disconnected');
   }
 
   // connect to server when rendered
-  componentDidMount() {
+  componentWillMount() {
     this.socket = io.connect();
     this.socket.on('connect', this.connect);
     this.socket.on('disconnect', this.disconnect);
@@ -39,34 +40,29 @@ class App extends React.Component {
     // send to client to get back tweet data
     var user = this;
     this.socket.on('sendMessage', function(tweetInfo) {
-      user.getTweet(tweetInfo);
-      console.log('tweetinfo: ' + tweetInfo);
+      user.getTweet(tweetInfo.tweet);
     });
   }
 
-  // get the tweet to store in an array
+  // get the tweet to store in an array and push the object into array or else can't map it 
   getTweet(tweet) {
-    this.setState({ tweets: tweet });
-    console.log('state of tweets array: ' + this.state.tweets);
-  }
-
-  handleClick() {
-    this.setState({
-      searchStatus: true,
-    });
+    var newTweets = this.state.tweets;  
+    newTweets.push(tweet);
+    this.setState({ tweets: newTweets });
   }
 
   emit(eventName, returnedData) {
     this.socket.emit(eventName, returnedData);
+    this.setState({searchStatus: true})
   }
 
   render() {
     return (
       <div>
-        <Test handleClick={this.handleClick} emit={this.emit}/>
+        <Test emit={this.emit}/>
         {this.state.searchStatus ?
-          <TweetList
-          /> : null}
+        <TweetList tweets={this.state.tweets}
+        /> : null}
       </div>
     );
   }
