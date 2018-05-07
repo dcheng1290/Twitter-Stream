@@ -9,8 +9,8 @@ class StreamView extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <h1>The Stream View</h1>
+        <div className="stream col-sm-4">
+          <h1 className='viewTitle'>The Stream View</h1>
           <TweetList tweets={this.props.tweets}/>
         </div>
       </div>

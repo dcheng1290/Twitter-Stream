@@ -40,6 +40,7 @@
     "postcss-loader": "^2.1.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-linechart": "^1.1.12",
     "redis": "^2.7.1",
     "sass-loader": "^7.0.1",
     "sentiment": "^5.0.0",
@@ -55,6 +56,7 @@
     "chai": "^3.5.0",
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^1.1.11",
     "grunt": "^0.4.5",
     "grunt-eslint": "^19.0.0",
     "grunt-mocha-test": "^0.13.2",
@@ -64,6 +66,7 @@
     "node-mocks-http": "^1.6.1",
     "style-loader": "^0.21.0",
     "supertest": "^3.0.0",
+    "url-loader": "^1.0.1",
     "webpack": "^2.3.2",
     "webpack-dev-server": "^2.4.2"
   },

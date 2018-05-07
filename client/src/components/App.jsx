@@ -1,11 +1,9 @@
 import React from 'react';
 import update from 'immutability-helper';
 import io from 'socket.io-client';
-import styles from './CSS/App.scss';
-import SearchForm from './SearchForm.jsx';
-import TweetList from './TweetList.jsx';
-import Test from './Test.jsx';  
-import Tweets from './Tweets.jsx';
+import Header from './Header.jsx';  
+import Data from './Data.jsx';
+import Footer from './Footer.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,6 +12,7 @@ class App extends React.Component {
       tweets: [],
       status: '',
       searchStatus: false,
+      totalSentiment: { total: 0, positive: 0, negative: 0, neutral: 0 },
     };
     this.emit = this.emit.bind(this);
     this.connect = this.connect.bind(this);
@@ -49,20 +48,47 @@ class App extends React.Component {
     var newTweets = this.state.tweets;  
     newTweets.push(tweet);
     this.setState({ tweets: newTweets });
+    this.totalSentiment(tweet.sentiment);
+
   }
 
   emit(eventName, returnedData) {
     this.socket.emit(eventName, returnedData);
-    this.setState({searchStatus: true})
+    this.setState({
+      searchStatus: true,
+      tweets: []
+    });
+  }
+
+  totalSentiment(sentiment) {
+    var totalSentiment = this.state.totalSentiment;
+    var updatedSentiment = totalSentiment;
+
+    if (sentiment === 'Positive') {
+      updatedSentiment.positive ++;
+      updatedSentiment.total ++;
+      this.setState({ totalSentiment: updatedSentiment});
+    } else if (sentiment === 'Negative') {
+      updatedSentiment.negative ++;
+      updatedSentiment.total ++;
+      this.setState({ totalSentiment: updatedSentiment });
+    } else {
+      updatedSentiment.neutral++;
+      updatedSentiment.total ++;
+      this.setState({ totalSentiment: updatedSentiment });
+    }
+    console.log(this.state.totalSentiment);
   }
 
   render() {
     return (
       <div>
-        <Test emit={this.emit}/>
+        <Header emit={this.emit}/>
         {this.state.searchStatus ?
-        <TweetList tweets={this.state.tweets}
-        /> : null}
+          <Data tweets={this.state.tweets}
+          /> : null}
+        {/* <Data tweets={this.state.tweets}/> */}
+        <Footer/>
       </div>
     );
   }

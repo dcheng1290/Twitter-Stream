@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './CSS/TweetList.scss';
 import Tweets from './Tweets.jsx';
 
 class TweetList extends React.Component {
@@ -9,9 +8,8 @@ class TweetList extends React.Component {
     
   render() {  
     return (
-      <div>
-        <h5>The working twitter stream</h5>
-        {this.props.tweets.map((mappedTweet, index) => <Tweets tweet={mappedTweet} key={index} />)}
+      <div className='tweetMap'>
+       {this.props.tweets.map((tweet, index) => <Tweets tweet={tweet} key={index} />)}
       </div>
     );
   }

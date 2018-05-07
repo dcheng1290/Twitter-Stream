@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import path from 'path';
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 const config = {
   entry: './client/src/app',
@@ -10,7 +10,19 @@ const config = {
   },
   module: {
     rules: [
-      { test: /\.(js|jsx)$/,
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              limit: 25000,
+            }
+          }
+        ]
+      },
+      { 
+        test: /\.(js|jsx)$/,
         include: path.join(__dirname, 'client/src'),
         exclude: ['node_modules'],
         use: [
@@ -28,15 +40,16 @@ const config = {
           use: [
             {
               loader: 'css-loader',
-              options: {
-                modules: true,
-                localIdentName: '[name]__[local]___[hash:base64:5]'
-              }
+              // options: {
+              //   modules: true,
+              //   localIdentName: '[name]__[local]___[hash:base64:5]'
+              // }
             },
             'postcss-loader'
           ]
         })
       },
+      
       {
         test: /\.scss$/,
         use: ExtractTextPlugin.extract({
@@ -44,12 +57,12 @@ const config = {
           use: [
             {
               loader: 'css-loader',
-              options: {
-                modules: true,
-                sourceMap: true,
-                importLoaders: 2,
-                localIdentName: '[name]__[local]___[hash:base64:5]'
-              }
+              // options: {
+              //   modules: true,
+              //   sourceMap: true,
+              //   importLoaders: 2,
+              //   localIdentName: '[name]__[local]___[hash:base64:5]'
+              // }
             },
             'sass-loader'
           ]
@@ -57,6 +70,7 @@ const config = {
       },
     ]
   },
+
   plugins: [
     new ExtractTextPlugin({ filename: 'styles.css', allChunks: true }),
   ]

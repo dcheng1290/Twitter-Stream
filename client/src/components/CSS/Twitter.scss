@@ -1,0 +1,199 @@
+// $total: blue;
+// $positive: green;
+// $neutral: sandybrown;
+// $negative: red;
+
+$font-family: 'Open Sans', sans-serif;
+
+body {
+  background-image: url('http://akveo.com/blur-admin/assets/img/blur-bg-blurred.jpg');
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-attachment: fixed;
+  background-size: cover;
+  overflow-x: hidden;
+}
+
+// Header.JSX
+
+.header {
+  text-align: center;
+  
+  h1 {
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
+  font-family: $font-family;
+  margin-top: 8px;
+  margin-bottom: 0px;
+  }
+
+  #twit {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+    margin-bottom: 15px;
+  }  
+}
+
+.default {
+  height: 600px;
+  background-image: linear-gradient(rgba(0,0,0, 0.4), rgba(0,0,0, 0.8));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  position: relative;
+  
+  .content {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 700px;
+
+    h1, h2 {
+    color: white;
+    text-align: center;
+    }
+
+    h1 {
+    order: 2;
+    font-size: 40px;
+    font-weight: 700;
+    }
+
+    h2 {
+    order: 3;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: #cfcfcf;
+    }
+
+    #twit {
+      height: 40px;
+      width: auto;
+      margin-right: 10px;
+      margin-bottom: 15px;
+    }
+
+    #searchForm {
+    order: 4;
+    width: 350px;
+    margin-top: 40px;
+    margin-right: auto;
+    margin-left: auto;
+
+      input:focus {
+      border: 1px solid #59BBFF;
+      box-shadow: 0 0 4px #59BBFF;
+      }
+
+      .btn-default {
+      background-color: #59BBFF;
+      border-color: #59BBFF;
+      font-family: $font-family;
+      font-weight: 600;
+      color: white;
+      // text-transform: uppercase;
+      // transition: all 0.25s ease-in-out;
+      }
+    }
+  }
+}
+
+// TweetList, Tweets
+.results {
+  height: 700px;
+
+  .stream {
+    height: 700px;
+    background-color: white;
+    padding: 0;
+    float: left;
+    // padding: 0 25px 0 15px;
+
+    .viewTitle {
+      margin-bottom: 0;
+      padding: 15px 5px 10px;
+      color: black;
+      border-radius: 0;
+      font-size: 20px;
+      text-align: center;
+      background-color: #b3b3b3;
+    }
+
+    .tweetMap {
+      height: 600px;
+      background-color: white;
+      padding-bottom: 20px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      box-shadow: 0 0 1px 1px rgba(0,0,0, 0.2);
+
+      .tweetInfo {
+        padding: 10px 0px 10px 15px;
+        margin: 5px 10px 5px 10px;
+        border-bottom: 1px solid #ccc;
+        background-color: white;
+        box-shadow: 0 0 1px 1px rgba(0,0,0, 0.2);
+
+        .profilePic {
+          display: inline-block;
+          vertical-align: top;
+          margin-right: 10px;
+          height: 50px;
+          width: 50px;
+          border-radius: 5px;
+        }
+
+        .data {
+          display: inline-block;
+          width: 80%;
+          position: relative;
+
+          .user {
+            display: inline-block;
+            width: 90%;
+
+            .name {
+              font-size: 14px;
+              font-weight: 700;
+              margin-right: 10px;
+            }
+
+            .username {
+              font-size: 14px;
+            }
+          }
+
+          .sentiment {
+            position: absolute;
+            top: 5px;
+            right: 0;
+            display: inline-block;   
+          }         
+
+          .text {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+// Footer.jsx
+
+.footer {
+  h1 {
+    font-size: 40px;
+    color: white;
+    text-align: center;
+  }
+}
