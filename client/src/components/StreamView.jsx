@@ -11,7 +11,7 @@ class StreamView extends React.Component {
       <div>
         <div className="stream col-sm-4">
           <h1 className='viewTitle'>The Stream View</h1>
-          <TweetList tweets={this.props.tweets}/>
+          <TweetList currentTweets={this.props.currentTweets}/>
         </div>
       </div>
     );

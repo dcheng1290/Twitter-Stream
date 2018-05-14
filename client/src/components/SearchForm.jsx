@@ -1,40 +1,40 @@
-import React from 'react';
+import React, { Component } from 'react';
 import App from './App.jsx';
 
 
-class SearchForm extends React.Component {
-  constructor() {
-    super();
+class SearchForm extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      keyword: ''
+      keyword: '',
     };
-    this.submit = this.submit.bind(this);
+    this.emit = this.props.emit;
+    this.initTimestamp = this.props.initTimestamp;
     this.updateKeyword = this.updateKeyword.bind(this);
     this.search = this.search.bind(this);
-  }                             
-  
+  }
+
   updateKeyword(e) {
     this.setState({
-      keyword: e.target.value
+      keyword: e.target.value,
     });
   }
 
-  submit(e) {
+  search(e) {
     e.preventDefault();
-  }
-
-  search() {
-    this.props.emit('search', {keyword: this.state.keyword});
+    const initTimestamp = new Date().getTime();
+    this.emit('search', { keyword: this.state.keyword });
+    this.initTimestamp({ initTimestamp: initTimestamp });
   }
 
   render() {
     return (
       <div id='searchForm'>
-        <form className='input-group' onSubmit={(e) => { this.search(); this.submit(e); }}>
+        <form className='input-group' onSubmit={this.search}>
           <input id='search' ref="keyword" type="search" placeholder="Enter Keyword" onChange={this.updateKeyword}
             autoFocus="autofocus" className="form-control" />
           <span className='input-group-btn'>
-            <button id='submit' disabled={!this.state.keyword} onSubmit={this.submit} onClick={this.search} className="btn btn-default" type="button">Search</button>
+            <button type="submit" className="btn btn-default" disabled={!this.state.keyword}>Search</button>
           </span>
         </form>
       </div>

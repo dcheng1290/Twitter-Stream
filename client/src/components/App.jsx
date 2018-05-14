@@ -1,98 +1,173 @@
-import React from 'react';
-import update from 'immutability-helper';
+import React, { Component } from 'react';
 import io from 'socket.io-client';
+import moment from 'moment-timezone';
 import Header from './Header.jsx';  
 import Data from './Data.jsx';
 import Footer from './Footer.jsx';
+import TimeSeries from './TimeSeries.jsx';
 
-class App extends React.Component {
+/* 
+  look into adding props validation
+  separate concerns - move component logic out of app
+  pull search out of header -- put into own search component
+*/
+
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tweets: [],
-      status: '',
+      currentTweets: [],
+      chartArray: [],
+      posArray: [],
+      negArray: [],
+      neutArray: [],
+      totalTweets: {
+        total: 0,
+        posTotal: 0,
+        negTotal: 0,
+        neutTotal: 0,
+      },
       searchStatus: false,
-      totalSentiment: { total: 0, positive: 0, negative: 0, neutral: 0 },
+      initTimestamp: '',
+      sentiment: 'Neutral',
     };
+
     this.emit = this.emit.bind(this);
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
-    this.getTweet = this.getTweet.bind(this);
+    this.initTimestamp = this.initTimestamp.bind(this);
   }
 
-  connect() {
+  connect() { // connect to socket
     this.setState({ status: 'connected' });
-    console.log('Connected on socket: ' + this.socket.id);
   }
   
-  disconnect() {
+  disconnect() { // disconnect from socket
     this.setState({ status: 'disconnected' });
     console.log('Disconnected');
   }
-
-  // connect to server when rendered
-  componentWillMount() {
+  
+  componentWillMount() { // connect to server when rendered
     this.socket = io.connect();
     this.socket.on('connect', this.connect);
     this.socket.on('disconnect', this.disconnect);
 
-    // send to client to get back tweet data
-    var user = this;
-    this.socket.on('sendMessage', function(tweetInfo) {
+    const user = this;
+    this.socket.on('sendMessage', (tweetInfo) => { // send to client to get back tweet data
       user.getTweet(tweetInfo.tweet);
     });
   }
 
-  // get the tweet to store in an array and push the object into array or else can't map it 
-  getTweet(tweet) {
-    var newTweets = this.state.tweets;  
-    newTweets.push(tweet);
-    this.setState({ tweets: newTweets });
-    this.totalSentiment(tweet.sentiment);
-
+  initTimestamp(timestamp) {
+    this.setState({ initTimestamp: timestamp.initTimestamp });
+    this.setState({ search: true });
   }
 
-  emit(eventName, returnedData) {
-    this.socket.emit(eventName, returnedData);
+  getTweet(tweet) {
+    let {
+      currentTweets,
+      totalTweets,
+      chartArray,
+      posArray,
+      negArray,
+      neutArray,
+    } = this.state;
+
+    let coeff = 1000 * 60; 
+    let roundedTime = Math.round(Number(tweet.timestamp) / coeff) * coeff; // round time 
+    let updatedChart = [...chartArray, [roundedTime, totalTweets.posTotal]];
+    let updatedNeut = [...neutArray, [roundedTime, totalTweets.neutTotal]];
+    let updatedNeg = [...negArray, [roundedTime, totalTweets.negTotal]];
+    let updatedTweets = [tweet, ...currentTweets];
+    
+    this.setState({
+      currentTweets: updatedTweets,
+      chartArray: updatedChart,
+      neutArray: updatedNeut,
+      negArray: updatedNeg,
+    });
+    this.incrementSentimentCount(tweet.sentiment);
+    this.binTweets(tweet.timestamp, tweet.sentiment);
+    // this.updateChartPoint(tweet.sentiment, tweet.timestamp);
+    this.overallSentiment();
+  }
+
+  emit(eventName, keyword) {
+    this.socket.emit(eventName, keyword);
     this.setState({
       searchStatus: true,
-      tweets: []
+      currentTweets: [],
+      totalTweets: {
+        total: 0,
+        posTotal: 0,
+        neutTotal: 0,
+        negTotal: 0,
+      },
     });
   }
 
-  totalSentiment(sentiment) {
-    var totalSentiment = this.state.totalSentiment;
-    var updatedSentiment = totalSentiment;
-
+  incrementSentimentCount(sentiment) {
+    const { totalTweets } = this.state;
+    const newTotal = totalTweets;
     if (sentiment === 'Positive') {
-      updatedSentiment.positive ++;
-      updatedSentiment.total ++;
-      this.setState({ totalSentiment: updatedSentiment});
+      totalTweets.posTotal += 1;
+      totalTweets.total += 1;
+      this.setState({ totalTweets: newTotal });
     } else if (sentiment === 'Negative') {
-      updatedSentiment.negative ++;
-      updatedSentiment.total ++;
-      this.setState({ totalSentiment: updatedSentiment });
+      totalTweets.negTotal += 1;
+      totalTweets.total += 1;
+      this.setState({ totalTweets: newTotal });
     } else {
-      updatedSentiment.neutral++;
-      updatedSentiment.total ++;
-      this.setState({ totalSentiment: updatedSentiment });
+      totalTweets.neutTotal += 1;
+      totalTweets.total += 1;
+      this.setState({ totalTweets: newTotal });
     }
-    console.log(this.state.totalSentiment);
+  }
+
+  
+  overallSentiment() {
+    let { totalTweets: { negTotal, posTotal } } = this.state;
+    let totalTweets = posTotal + negTotal;
+    let posTweets = posTotal;
+    let sentiment = posTweets / totalTweets;
+    if (sentiment < 0.5) {
+      this.setState({ sentiment: 'Negative' });
+    } else if (sentiment > 0.5) {
+      this.setState({ sentiment: 'Positive' });
+    } else {
+      this.setState({ sentiment: 'Neutral' });
+    }
   }
 
   render() {
+    let { 
+      currentTweets, 
+      totalTweets, 
+      sentiment, 
+      chartArray, 
+      posArray, 
+      negArray, 
+      neutArray 
+    } = this.state;
+    // console.log(JSON.parse(JSON.stringify(this.state.binnedTweets)));
     return (
       <div>
-        <Header emit={this.emit}/>
-        {this.state.searchStatus ?
-          <Data tweets={this.state.tweets}
-          /> : null}
-        {/* <Data tweets={this.state.tweets}/> */}
-        <Footer/>
+        <Header
+          emit={this.emit}
+          initTimestamp={this.initTimestamp} />
+        {this.state.search ? <Data
+          currentTweets={currentTweets}
+          totalTweets={totalTweets}
+          sentiment={sentiment}
+          chartArray={chartArray}
+          posArray={posArray}
+          negArray={negArray}
+          neutArray={neutArray}
+        /> : null}
       </div>
     );
   }
 }
 
-
 export default App;
+

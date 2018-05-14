@@ -10,11 +10,11 @@ const Header = (props) => {
       </div>
       <div className="default">
         {/* <div className="row"> */}
-          <div className="content col-sm-12">
-          <h1>Search for brand or keywords</h1>
-            {/* <h2>Search for brand keywords</h2> */}
-            <SearchForm emit={props.emit}/>
-          </div>
+        <div className="content col-sm-12">
+          <h1>Track how your brand is doing</h1>
+          <h2>Search for brand keywords</h2>
+          <SearchForm emit={props.emit} initTimestamp={props.initTimestamp}/>
+        </div>
         {/* </div> */}
       </div>
     </div>

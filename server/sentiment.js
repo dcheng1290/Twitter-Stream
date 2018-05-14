@@ -2,7 +2,7 @@ const Sentiment = require('sentiment');
 const sentiment = new Sentiment;
 
 sentiment.getTweets = (tweet, socket) => {
-  // define incoming tweets and analyze it 
+  // define incoming tweets and analyze it
   let sentimentText = sentiment.analyze(tweet.text);
 
   if (sentimentText.score > 0) {
@@ -18,11 +18,12 @@ sentiment.getTweets = (tweet, socket) => {
 
 // this object will store the wanted properties from tweet and along with analyzed sentiment data
 sentiment.storeTweets = (tweet, sentimentScore, socket) => {
-  let tweetInfo = {
+  const tweetInfo = {
     created_at: tweet.created_at,
     sentiment: sentimentScore,
     tweet_id: tweet.id_str,
     text: tweet.text,
+    timestamp: tweet.timestamp_ms, // needed for time series chart
     user: {
       name: tweet.user.name,
       username: tweet.user.screen_name,
@@ -37,5 +38,3 @@ sentiment.storeTweets = (tweet, sentimentScore, socket) => {
 
 
 module.exports = sentiment;
-
-

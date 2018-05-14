@@ -37,40 +37,42 @@ app.use(express.static(path.join(__dirname + '/../public/dist')));
 const server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
 
-// Twitter.get('search/tweets', { q: 'banana since:2011-07-11', count: 100 }, function (err, data, response) {
-//   console.log('getting data')
-// })
-
-
 // Creating socket connection with client and add all socket events/listeners here
 const io = require('socket.io').listen(server);
-io.sockets.on('connection', function(socket) {
+
+const connections = [];
+
+io.sockets.on('connection', (socket) => {
   console.log('A client is connected');
 
-  var streamTwitter;
+  let prevSearch = false;
+  let streamTwitter;
 
   // keyword provided from SearchForm.jsx on 'search'
-  socket.on('search', function (msg) {
-    console.log('message: ' + msg.keyword);
+  socket.on('search', (msg) => {
+    console.log('keyword ' + msg.keyword);
     
-    // track: searches based on the keyword 
-    streamTwitter = Twitter.stream('statuses/filter', {track: msg.keyword});
+    if (prevSearch) {
+      streamTwitter.stop();
+    } else {
+      prevSearch = true;
+    }
+    // track: searches based on the keyword
+    streamTwitter = Twitter.stream('statuses/filter', { track: msg.keyword });
 
     // Turns on the stream on 'tweet' and includes the entire tweet information
-    streamTwitter.on('tweet', function (tweet) {
+    streamTwitter.on('tweet', (tweet) => {
       console.log(tweet.text);
       
       // As the message comes in, get sentiment data and send back to client
-      socket.emit('sendMessage', {tweet: Sentiment.getTweets(tweet)});
+      socket.emit('sendMessage', { tweet: Sentiment.getTweets(tweet) });
     });
 
-    socket.once('disconnect', function () {
-      
-
+    socket.once('disconnect', () => {
+      connections.splice(connections.indexOf(socket), 1);
       socket.disconnect();
       streamTwitter.stop();
-
-      console.log('Socket disconnected');
+      console.log('Socket disconnected: %s sockets remaining', connections.length);
     });
   });
 });

@@ -1,18 +1,14 @@
 import React from 'react';
-import Tweets from './Tweets.jsx';
+import TweetListEntry from './TweetListEntry.jsx';
 
-class TweetList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-    
-  render() {  
-    return (
-      <div className='tweetMap'>
-       {this.props.tweets.map((tweet, index) => <Tweets tweet={tweet} key={index} />)}
-      </div>
-    );
-  }
-}
+const TweetList = ({ currentTweets }) => (
+  <div className='tweetMap'>
+    {
+      currentTweets.map((tweet, index) => {
+        return <TweetListEntry tweet={tweet} key={index} />;
+      })
+    }
+  </div>
+);
 
 export default TweetList;
