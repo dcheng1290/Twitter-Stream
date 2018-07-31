@@ -1,11 +1,11 @@
 import React from 'react';
 import StreamView from './StreamView.jsx';
-import Dashboard from './Dashboard.jsx';
+import TweetUI from './TweetUI.jsx';
 
 const Data = (props) => {
-  let { 
-    currentTweets, 
-    totalTweets, 
+  const {
+    currentTweets,
+    totalTweets,
     sentiment,
     chartArray,
     posArray,
@@ -17,7 +17,7 @@ const Data = (props) => {
     <div className="results container-fluid">
       <div className='row'>
       <StreamView currentTweets={currentTweets}/>
-      <Dashboard
+      <TweetUI
         totalTweets={totalTweets}
         sentiment={sentiment}
         chartArray={chartArray}

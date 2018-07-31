@@ -1,17 +1,15 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import d3 from 'd3';
 import TimeSeries from './TimeSeries.jsx';
 
-const TwitterActivityChart = (props) => {
-  let {
+const SentimentChart = (props) => {
+  const {
     totalTweets,
     posArray,
     negArray,
     neutArray,
     chartArray,
   } = props;
-  let {
+  const {
     total,
     posTotal,
     neutTotal,
@@ -19,7 +17,7 @@ const TwitterActivityChart = (props) => {
   } = totalTweets;
   return (
     <div className="twitter-activity">
-      <h4>Sentiment Analysis</h4>
+      <h4>Sentiment Analysis (Tweets per 10 seconds)</h4>
       <TimeSeries
         posArray={posArray}
         negArray={negArray}
@@ -57,4 +55,4 @@ const TwitterActivityChart = (props) => {
   );
 };
 
-export default TwitterActivityChart;
+export default SentimentChart;

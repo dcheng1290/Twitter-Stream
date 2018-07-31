@@ -1,12 +1,16 @@
 import React from 'react';
 
-const TweetListEntry = ({ tweet }) => {  
-  let { user, sentiment, text } = tweet;
-  
-  let {
+const TweetListEntry = ({ tweet }) => {
+  const {
+    user,
+    sentiment,
+    text,
+  } = tweet;
+
+  const {
     profile_image_url,
     name,
-    username
+    username,
   } = user;
 
   return (

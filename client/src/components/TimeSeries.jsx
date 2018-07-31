@@ -14,21 +14,32 @@ class TimeSeries extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      positive: [[new Date().getTime(), 0]],
-      negative: [new Date().getTime(), 0],
-      neutral: [new Date().getTime(), 0],
+      positive: '',
+      neutral: '',
+      negative: '',
     };
   }
 
-  render() {
+  componentWillMount() {
+    this.getTweet();
+  }
 
+  getTweet() {
+    this.setState({
+      positive: this.props.posArray,
+      neutral: this.props.neutArray,
+      negative: this.props.negArray,
+    });
+  }
+
+  render() {
     const plotOptions = {
       series: {
         borderWidth: 0,
         pointPadding: 0,
         groupPadding: 0,
-      }
-    }
+      },
+    };
     return (
       <div className='highchart'>
         <HighchartsChart plotOptions={plotOptions} className='chart'>
@@ -38,13 +49,13 @@ class TimeSeries extends Component {
           <Legend>
           </Legend>
 
-          <XAxis type='datetime' tickInterval='60000'>
+          <XAxis type='datetime' >
             <XAxis.Title>Time</XAxis.Title>
           </XAxis>
 
           <YAxis id='sentimentLabel' >
             <YAxis.Title>Sentiment</YAxis.Title>
-            <LineSeries id='positive' name='Positive' color='green' data={this.props.chartArray} />
+            <LineSeries id='positive' name='Positive' color='green' data={this.props.posArray} />
             <LineSeries id='neutral' name='Neutral' color='#DAA520' data={this.props.neutArray} />
             <LineSeries id='negative' name='Negative' color='red' data={this.props.negArray} />
           </YAxis>

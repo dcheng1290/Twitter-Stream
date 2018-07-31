@@ -17,7 +17,7 @@ sentiment.getTweets = (tweet, socket) => {
 };
 
 // this object will store the wanted properties from tweet and along with analyzed sentiment data
-sentiment.storeTweets = (tweet, sentimentScore, socket) => {
+sentiment.storeTweets = (tweet, sentimentScore) => {
   const tweetInfo = {
     created_at: tweet.created_at,
     sentiment: sentimentScore,
